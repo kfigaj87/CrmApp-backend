@@ -19,8 +19,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const customerRoutes = require("./app/routes/CustomerRoutes")();
-app.use("/customers", customerRoutes);
+const customer = require("./app/routes/CustomerRoutes")();
+app.use("/customer", customer);
+
+const eventRoutes = require("./app/routes/EventRoutes");
+app.use("/customerEvent", eventRoutes);
+
+const userRoutes = require("./app/routes/UserRoutes");
+app.use("/user", userRoutes);
 
 app.listen(config.app.port, () => {
   console.log("Server is ready to use!");
