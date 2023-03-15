@@ -16,6 +16,28 @@ module.exports = {
       });
   },
 
+  get: (req, res) => {
+    const id = req.params.id;
+
+    CustomerModel.findById(id)
+      .populate("events")
+      .lean()
+      .exec((err, customer) => {
+        if (err) {
+          return res.status(500).json({
+            message: "Error while fetching Customer",
+            error: err,
+          });
+        }
+        if (!customer) {
+          return res.status(404).json({
+            message: "Customer not found",
+          });
+        }
+        res.json(customer);
+      });
+  },
+
   create: (req, res) => {
     const customer = new CustomerModel({
       name: req.body.name,

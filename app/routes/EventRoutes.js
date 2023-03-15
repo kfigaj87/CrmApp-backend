@@ -1,42 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const customerEvent = require("../controllers/EventController");
+const eventController = require("../controllers/eventController");
 
-module.exports = () => {
-  router.post("/add/:customerId", customerEvent.add, function (req, res) {
-    customerEvent.add(
-      req.params.customerId,
-      req.body,
-      function (err, customerEvent) {
-        if (err) {
-          res.json({ error: true });
-        } else {
-          res.json(customerEvent);
-        }
-      }
-    );
-  });
+router.post("/add/:customerId/events", eventController.addEvent);
+router.delete(
+  "/delete/:customerId/events/:eventId",
+  eventController.deleteEvent
+);
 
-  router.delete(
-    "/delete/:customerId",
-    customerEvent.delete,
-    function (req, res) {
-      console.log(req.body.customerEventId);
-      console.log(req.params.customerId);
-      customerEvent.delete(
-        req.params.customerId,
-        req.body.customerEventId,
-        function (err, log) {
-          if (err) {
-            res.json({ error: true });
-          } else {
-            res.json(log);
-          }
-        }
-      );
-    }
-  );
-
-  return router;
-};
+module.exports = router;

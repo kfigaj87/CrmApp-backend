@@ -1,9 +1,9 @@
 const User = require("../models/User");
 
 function addUser(data, cb) {
-  let newUser = new User(data);
+  const newUser = new User(data);
 
-  newUser.save(function (err, user) {
+  newUser.save((err, user) => {
     if (err) {
       cb(err);
     } else {
@@ -13,20 +13,28 @@ function addUser(data, cb) {
 }
 
 function loginUser(data, cb) {
-  User.findOne({ username: data.username }).exec(function (err, user) {
+  User.findOne({ username: data.username }).exec((err, user) => {
     if (err) {
       cb(err);
-      return;
-    }
-
-    if (!user) {
-      cb(null, user);
-      return;
+    } else {
+      if (!user) {
+        cb(null, null);
+      } else {
+        user.comparePassword(data.password, (err, isMatch) => {
+          if (err) {
+            cb(err);
+          } else if (!isMatch) {
+            cb(null, null);
+          } else {
+            cb(null, user);
+          }
+        });
+      }
     }
   });
 }
 
 module.exports = {
-  add: addUser,
-  login: loginUser,
+  addUser,
+  loginUser,
 };
